@@ -636,28 +636,31 @@
             }
         });
 
-        // API endpoint - change this based on environment
-        const API_ENDPOINT = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:3000'  // Local development
-            : 'https://ev-os-api.noodoe.com/api/1.0/stations';  // Direct API (will have CORS issues)
+        // Simulate station status for demo
+        function getSimulatedStatus() {
+            const statuses = ['Available', 'Charging', 'Available', 'Available', 'Occupied'];
+            return statuses[Math.floor(Math.random() * statuses.length)];
+        }
 
-        // Fetch station status
+        // Fetch station status (simulated for now)
         async function fetchStationStatus(stationId) {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            // Return simulated data
+            return {
+                stationId: `nev${stationId}:0`,
+                status: getSimulatedStatus(),
+                connectorStatus: getSimulatedStatus(),
+                power: '7.2',
+                voltage: '240',
+                maxPower: '7.2'
+            };
+
+            /*
+            // Uncomment this to use real API when available
             try {
-                // Use proxy server for local development
-                const url = API_ENDPOINT.includes('localhost')
-                    ? `${API_ENDPOINT}/api/station/${stationId}`
-                    : `${API_ENDPOINT}/nev${stationId}:0`;
-
-                const headers = API_ENDPOINT.includes('localhost')
-                    ? {}  // Proxy handles auth
-                    : {
-                        'Authorization': `Bearer ${API_TOKEN}`,
-                        'accept': 'application/json'
-                    };
-
-                const response = await fetch(url, { headers });
-
+                const response = await fetch(`http://localhost:3000/api/station/${stationId}`);
                 if (response.ok) {
                     const data = await response.json();
                     console.log(`Station ${stationId}:`, data);
@@ -667,6 +670,7 @@
                 console.error(`Error fetching station ${stationId}:`, error);
             }
             return null;
+            */
         }
 
         // Determine status from API response
