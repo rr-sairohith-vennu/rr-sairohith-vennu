@@ -24,7 +24,7 @@ app.get('/api/station/:stationId', async (req, res) => {
     try {
         console.log(`Fetching station ${stationId}...`);
 
-        const response = await fetch(`https://ev-os-api.noodoe.com/api/1.0/stations/nev${stationId}:0`, {
+        const response = await fetch(`https://ev-os-api.noodoe.com/api/1.0/stations/${stationId}`, {
             headers: {
                 'Authorization': `Bearer ${NOODOE_TOKEN}`,
                 'accept': 'application/json'
@@ -36,46 +36,19 @@ app.get('/api/station/:stationId', async (req, res) => {
 
             // Check if API returned error
             if (data.ok === false || data.error) {
-                console.log(`API error for station ${stationId}, using simulated data`);
-                // Return simulated data
-                const simulatedData = {
-                    stationId: `nev${stationId}:0`,
-                    status: getSimulatedStatus(),
-                    connectorStatus: getSimulatedStatus(),
-                    power: '7.2',
-                    voltage: '240',
-                    maxPower: '7.2'
-                };
-                return res.json(simulatedData);
+                console.log(`API error for station ${stationId}:`, data.error);
+                return res.status(500).json({ error: 'API returned error' });
             }
 
-            console.log(`Station ${stationId}: ${data.status || 'unknown'}`);
-            res.json(data);
+            console.log(`Station ${stationId}: ${data.data?.ports?.[0]?.status || 'unknown'}`);
+            res.json(data.data); // Return only the data object
         } else {
-            console.log(`API error ${response.status} for station ${stationId}, using simulated data`);
-            // Return simulated data on error
-            const simulatedData = {
-                stationId: `nev${stationId}:0`,
-                status: getSimulatedStatus(),
-                connectorStatus: getSimulatedStatus(),
-                power: '7.2',
-                voltage: '240',
-                maxPower: '7.2'
-            };
-            res.json(simulatedData);
+            console.log(`API error ${response.status} for station ${stationId}`);
+            res.status(response.status).json({ error: 'API request failed' });
         }
     } catch (error) {
-        console.log(`Fetch error for station ${stationId}, using simulated data:`, error.message);
-        // Return simulated data on error
-        const simulatedData = {
-            stationId: `nev${stationId}:0`,
-            status: getSimulatedStatus(),
-            connectorStatus: getSimulatedStatus(),
-            power: '7.2',
-            voltage: '240',
-            maxPower: '7.2'
-        };
-        res.json(simulatedData);
+        console.log(`Fetch error for station ${stationId}:`, error.message);
+        res.status(500).json({ error: error.message });
     }
 });
 
