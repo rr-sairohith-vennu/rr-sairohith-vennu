@@ -713,7 +713,13 @@
 
         // Create station card
         function createStationCard(station, status = 'available', info = {}) {
-            const statusText = status.charAt(0).toUpperCase() + status.slice(1);
+            const statusNames = {
+                'available': 'Available',
+                'charging': 'Charging',
+                'occupied': 'Fully Charged',
+                'offline': 'Offline'
+            };
+            const statusText = statusNames[status] || status.charAt(0).toUpperCase() + status.slice(1);
 
             return `
                 <div class="station-card ${status}" data-id="${station.id}">
