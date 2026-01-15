@@ -638,13 +638,13 @@
             }
         });
 
-        // Fetch station status via Vercel serverless function
+        // Fetch station status via Netlify serverless function
         async function fetchStationStatus(stationId) {
             try {
-                // Try Vercel function first (for production)
-                const vercelUrl = `https://rakcharge.vercel.app/api/station?stationId=${stationId}`;
+                // Use Netlify function (works when deployed on Netlify)
+                const apiUrl = `/.netlify/functions/station?stationId=${stationId}`;
 
-                const response = await fetch(vercelUrl);
+                const response = await fetch(apiUrl);
 
                 if (response.ok) {
                     const data = await response.json();
