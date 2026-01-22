@@ -677,13 +677,13 @@
 
                 const status = portStatus.toUpperCase();
 
-                // Map Noodoe API statuses to our status types
+                // Map Noodoe API statuses to our display statuses
                 if (status === 'AVAILABLE') return 'available';
                 if (status === 'CHARGING') return 'charging';
-                if (status === 'OCCUPIED' || status === 'PREPARING' || status === 'FINISHING') return 'occupied';
+                if (status === 'OCCUPIED' || status === 'PREPARING' || status === 'FINISHING' || status === 'SUSPENDEDEV') return 'occupied';
                 if (status === 'UNAVAILABLE' || status === 'FAULTED' || status === 'OFFLINE') return 'offline';
 
-                return 'available'; // Default
+                return 'offline'; // Default for unknown statuses
             }
 
             return 'offline';

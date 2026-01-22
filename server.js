@@ -11,6 +11,9 @@ const NOODOE_TOKEN = 'aLk-KQiQ-92ow8wJ.1dBNZ4lNyA_E4H1yS-mK7JoIUewu0N_tWFVyBQ-3s
 // Enable CORS for all origins
 app.use(cors());
 
+// Serve static files (HTML, CSS, JS)
+app.use(express.static(__dirname));
+
 // Simulate station statuses (for demo until API is fixed)
 function getSimulatedStatus() {
     const statuses = ['Available', 'Charging', 'Available', 'Available', 'Occupied'];
